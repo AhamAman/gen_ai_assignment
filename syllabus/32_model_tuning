@@ -1,0 +1,1176 @@
+# Model Fine-Tuning – Customizing Pre-Trained LLMs for Specific Use Cases Mastery Checklist
+
+Mastering Model Fine-Tuning means learning how to adapt a pre-trained Large Language Model (LLM) into a specialized model for a specific domain, company, workflow, or task.
+
+Most AI applications start with:
+
+```text
+Prompt
+ ↓
+General Model
+ ↓
+Response
+```
+
+Fine-tuning introduces:
+
+```text
+Prompt
+ ↓
+Custom Model
+ ↓
+Specialized Response
+```
+
+Instead of repeatedly teaching behavior through prompts, fine-tuning permanently modifies model behavior through training.
+
+Fine-tuning is one of the most misunderstood areas in AI engineering.
+
+Many problems that beginners attempt to solve with fine-tuning should actually be solved with:
+
+```text
+Prompt Engineering
+
+RAG
+
+Tool Calling
+
+Memory
+
+Agents
+```
+
+A senior engineer must know when NOT to fine-tune.
+
+---
+
+# Table of Contents
+
+Phase 0 : Why Fine-Tuning Exists
+
+Phase 1 : Foundations
+
+Phase 2 : LLM Training Pipeline
+
+Phase 3 : Dataset Engineering
+
+Phase 4 : Supervised Fine-Tuning (SFT)
+
+Phase 5 : Instruction Tuning
+
+Phase 6 : PEFT and LoRA
+
+Phase 7 : RLHF and Preference Tuning
+
+Phase 8 : Evaluation
+
+Phase 9 : Production Systems
+
+Phase 10 : Advanced Fine-Tuning
+
+Phase 11 : Real Projects
+
+Phase 12 : Senior / Architect Mastery
+
+---
+
+# Phase 0 — Why Fine-Tuning Exists
+
+## Historical Context
+
+Evolution of NLP systems:
+
+```text
+Task-Specific Models
+ ↓
+Transfer Learning
+ ↓
+Foundation Models
+ ↓
+Fine-Tuned Foundation Models
+```
+
+Early machine learning required:
+
+```text
+One Model
+Per Task
+```
+
+Examples:
+
+```text
+Spam Detector
+
+Sentiment Model
+
+Translator
+
+NER Model
+```
+
+Modern AI:
+
+```text
+One Foundation Model
+
+Many Fine-Tuned Variants
+```
+
+---
+
+## Problem It Solves
+
+Base models are:
+
+```text
+General Purpose
+
+Broad Knowledge
+
+Generic Behavior
+```
+
+Organizations need:
+
+```text
+Company Knowledge
+
+Domain Expertise
+
+Custom Style
+
+Specialized Skills
+```
+
+---
+
+## Fine-Tuning Solution
+
+Teach the model:
+
+```text
+Your Domain
+
+Your Terminology
+
+Your Tasks
+
+Your Workflow
+```
+
+---
+
+## Alternatives
+
+### Prompt Engineering
+
+Pros:
+
+```text
+Fast
+Cheap
+No Training
+```
+
+Cons:
+
+```text
+Limited Behavior Change
+```
+
+---
+
+### RAG
+
+Pros:
+
+```text
+Dynamic Knowledge
+
+Fresh Data
+```
+
+Cons:
+
+```text
+External Infrastructure Required
+```
+
+---
+
+### Fine-Tuning
+
+Pros:
+
+```text
+Permanent Skill Adaptation
+```
+
+Cons:
+
+```text
+Training Cost
+Maintenance
+```
+
+---
+
+## Tradeoffs
+
+| Problem   | Best Solution      |
+| --------- | ------------------ |
+| Knowledge | RAG                |
+| Behavior  | Prompt Engineering |
+| Skill     | Fine-Tuning        |
+| Actions   | Agents             |
+
+---
+
+## Veteran Questions
+
+* When should fine-tuning be avoided?
+* Why is RAG often a better solution?
+* What belongs in prompts versus model weights?
+* What is the real cost of maintaining fine-tuned models?
+
+---
+
+# Phase 1 — Foundations
+
+## Concepts
+
+* Neural Networks
+* Deep Learning
+* Transformers
+* Parameters
+* Weights
+* Tokens
+* Embeddings
+* Training
+* Inference
+
+---
+
+## Subtopics
+
+### Forward Pass
+
+### Loss Functions
+
+### Gradient Descent
+
+### Backpropagation
+
+### Optimizers
+
+### Learning Rate
+
+### Epochs
+
+---
+
+## Architecture
+
+```text
+Dataset
+ ↓
+Training
+ ↓
+Weight Updates
+ ↓
+Model
+```
+
+---
+
+## Practical Exercises
+
+* [ ] Train a small neural network
+* [ ] Visualize gradient descent
+* [ ] Study transformer architecture
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Fine-tuning without understanding training.
+
+### Fix
+
+Understand optimization fundamentals first.
+
+---
+
+## Veteran Questions
+
+* What actually changes during training?
+* Why do weights encode knowledge?
+
+---
+
+# Phase 2 — LLM Training Pipeline
+
+## Concepts
+
+* Pretraining
+* Fine-Tuning
+* Alignment
+* Evaluation
+* Deployment
+
+---
+
+## Full Pipeline
+
+```text
+Internet Data
+ ↓
+Pretraining
+ ↓
+Base Model
+ ↓
+Instruction Tuning
+ ↓
+RLHF
+ ↓
+Production Model
+```
+
+---
+
+## Stages
+
+### Pretraining
+
+Learns language.
+
+---
+
+### Fine-Tuning
+
+Learns tasks.
+
+---
+
+### Alignment
+
+Learns preferences.
+
+---
+
+## Practical Exercises
+
+* [ ] Analyze Llama training pipeline
+* [ ] Analyze Gemma training pipeline
+* [ ] Map complete lifecycle
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Thinking fine-tuning builds a model from scratch.
+
+### Fix
+
+Understand adaptation versus creation.
+
+---
+
+## Veteran Questions
+
+* Why is pretraining expensive?
+* Why is fine-tuning relatively cheap?
+
+---
+
+# Phase 3 — Dataset Engineering
+
+## Concepts
+
+* Data Collection
+* Cleaning
+* Labeling
+* Formatting
+* Validation
+
+---
+
+## Dataset Formats
+
+### Instruction Format
+
+```json
+{
+  "instruction": "...",
+  "input": "...",
+  "output": "..."
+}
+```
+
+---
+
+### Chat Format
+
+```json
+[
+  {"role":"user","content":"..."},
+  {"role":"assistant","content":"..."}
+]
+```
+
+---
+
+## Sources
+
+### Human Experts
+
+### Internal Documents
+
+### Existing Conversations
+
+### Synthetic Data
+
+---
+
+## Pipeline
+
+```text
+Raw Data
+ ↓
+Cleaning
+ ↓
+Validation
+ ↓
+Training Dataset
+```
+
+---
+
+## Practical Exercises
+
+* [ ] Build instruction dataset
+* [ ] Clean noisy data
+* [ ] Create synthetic examples
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Garbage data.
+
+### Fix
+
+Data quality > model quality.
+
+---
+
+## Veteran Questions
+
+* Why is data more important than architecture?
+* What makes a great dataset?
+
+---
+
+# Phase 4 — Supervised Fine-Tuning (SFT)
+
+## Concepts
+
+* Supervised Learning
+* Labels
+* Target Outputs
+* Loss Minimization
+
+---
+
+## Architecture
+
+```text
+Prompt
+ ↓
+Expected Response
+ ↓
+Loss
+ ↓
+Weight Update
+```
+
+---
+
+## Example
+
+Input:
+
+```text
+Summarize article
+```
+
+Expected Output:
+
+```text
+Correct summary
+```
+
+---
+
+## Practical Exercises
+
+* [ ] Fine-tune Llama using SFT
+* [ ] Fine-tune Gemma
+* [ ] Compare model outputs
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Too little data.
+
+### Fix
+
+Use representative datasets.
+
+---
+
+## Veteran Questions
+
+* Why does SFT work?
+* What are its limitations?
+
+---
+
+# Phase 5 — Instruction Tuning
+
+## Concepts
+
+* Instruction Following
+* Behavioral Alignment
+* Assistant Training
+
+---
+
+## Architecture
+
+```text
+Instruction
+ ↓
+Model
+ ↓
+Desired Behavior
+```
+
+---
+
+## Use Cases
+
+### Coding Assistant
+
+### Legal Assistant
+
+### Medical Assistant
+
+### Customer Support Assistant
+
+---
+
+## Practical Exercises
+
+* [ ] Build instruction dataset
+* [ ] Train assistant behavior
+* [ ] Measure instruction-following accuracy
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Only training facts.
+
+### Fix
+
+Train behavior.
+
+---
+
+## Veteran Questions
+
+* Why is instruction tuning powerful?
+* How does ChatGPT differ from GPT base models?
+
+---
+
+# Phase 6 — PEFT and LoRA
+
+## Concepts
+
+* PEFT
+* LoRA
+* QLoRA
+* Adapters
+
+---
+
+## Problem
+
+Full fine-tuning:
+
+```text
+Large Cost
+
+Large GPU Requirements
+```
+
+---
+
+## LoRA Solution
+
+```text
+Frozen Model
+ ↓
+Adapter Layers
+ ↓
+Train Adapters Only
+```
+
+---
+
+## Architecture
+
+```text
+Base Model
+ ↓
+LoRA Layers
+ ↓
+Specialized Model
+```
+
+---
+
+## Practical Exercises
+
+* [ ] Train LoRA adapter
+* [ ] Train QLoRA model
+* [ ] Compare memory usage
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Full fine-tuning by default.
+
+### Fix
+
+Try LoRA first.
+
+---
+
+## Veteran Questions
+
+* Why does LoRA work?
+* When is full fine-tuning justified?
+
+---
+
+# Phase 7 — RLHF and Preference Tuning
+
+## Concepts
+
+* RLHF
+* DPO
+* Preference Learning
+* Reward Models
+* RLAIF
+
+---
+
+## Architecture
+
+```text
+Responses
+ ↓
+Human Preferences
+ ↓
+Reward Model
+ ↓
+Optimization
+```
+
+---
+
+## Techniques
+
+### RLHF
+
+### DPO
+
+### Constitutional AI
+
+### RLAIF
+
+---
+
+## Practical Exercises
+
+* [ ] Create preference dataset
+* [ ] Build reward model
+* [ ] Implement DPO workflow
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Optimizing only correctness.
+
+### Fix
+
+Optimize user preference.
+
+---
+
+## Veteran Questions
+
+* Why is alignment difficult?
+* Why are reward models powerful?
+
+---
+
+# Phase 8 — Evaluation
+
+## Concepts
+
+* Benchmarking
+* Accuracy
+* Human Evaluation
+* LLM-as-a-Judge
+
+---
+
+## Architecture
+
+```text
+Model
+ ↓
+Evaluation
+ ↓
+Metrics
+```
+
+---
+
+## Metrics
+
+### Accuracy
+
+### F1
+
+### BLEU
+
+### ROUGE
+
+### Human Ratings
+
+### Preference Scores
+
+---
+
+## Practical Exercises
+
+* [ ] Build benchmark suite
+* [ ] Create evaluation dataset
+* [ ] Compare models
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Testing on training data.
+
+### Fix
+
+Use held-out datasets.
+
+---
+
+## Veteran Questions
+
+* How do we measure improvement?
+* Which metrics matter?
+
+---
+
+# Phase 9 — Production Systems
+
+## Concepts
+
+* Deployment
+* Versioning
+* Monitoring
+* Rollbacks
+
+---
+
+## Architecture
+
+```text
+Users
+ ↓
+API
+ ↓
+Fine-Tuned Model
+ ↓
+Monitoring
+```
+
+---
+
+## Monitoring
+
+Track:
+
+* Accuracy
+* Drift
+* Latency
+* Cost
+* User Satisfaction
+
+---
+
+## Practical Exercises
+
+* [ ] Deploy model
+* [ ] Add monitoring
+* [ ] Implement rollback strategy
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Deploy and forget.
+
+### Fix
+
+Continuously evaluate.
+
+---
+
+## Veteran Questions
+
+* How should model versions be managed?
+* How do you detect regressions?
+
+---
+
+# Phase 10 — Advanced Fine-Tuning
+
+## Concepts
+
+### Multi-Task Learning
+
+### Domain Adaptation
+
+### Continual Learning
+
+### Model Merging
+
+### Adapter Stacking
+
+---
+
+## Architecture
+
+```text
+Base Model
+ ↓
+Domain Adapter
+ ↓
+Task Adapter
+ ↓
+Specialized Model
+```
+
+---
+
+## Practical Exercises
+
+* [ ] Merge adapters
+* [ ] Build continual training pipeline
+* [ ] Train domain-specific model
+
+---
+
+## Common Mistakes
+
+### Mistake
+
+Over-specialization.
+
+### Fix
+
+Maintain generalization.
+
+---
+
+## Veteran Questions
+
+* What causes catastrophic forgetting?
+* How should continual learning work?
+
+---
+
+# Phase 11 — Real Projects
+
+## Beginner Projects
+
+### FAQ Assistant
+
+### Customer Support Assistant
+
+### Email Classification Model
+
+---
+
+## Intermediate Projects
+
+### Company Knowledge Assistant
+
+### Legal Assistant
+
+### Technical Support Assistant
+
+---
+
+## Advanced Projects
+
+### Medical Assistant
+
+### Financial Analyst Assistant
+
+### Code Review Assistant
+
+---
+
+## Expert Projects
+
+### Enterprise Fine-Tuning Platform
+
+### Domain-Specific Foundation Model
+
+### Multi-Tenant Model Customization Platform
+
+---
+
+# Phase 12 — Senior / Architect Mastery
+
+## Can Explain
+
+* Training lifecycle
+* SFT
+* LoRA internals
+* RLHF
+* Evaluation systems
+
+---
+
+## Can Build
+
+* Fine-tuning pipelines
+* Dataset platforms
+* Evaluation frameworks
+* Deployment systems
+
+---
+
+## Can Design
+
+* Enterprise model customization platforms
+* Continuous training infrastructure
+* Multi-model AI ecosystems
+* Domain-specific AI platforms
+
+---
+
+# Internals
+
+Fine-Tuning Loop
+
+```text
+Dataset
+ ↓
+Forward Pass
+ ↓
+Loss
+ ↓
+Backpropagation
+ ↓
+Weight Updates
+ ↓
+Improved Model
+```
+
+---
+
+# Scalability
+
+Challenges:
+
+* GPU Costs
+* Dataset Growth
+* Evaluation Complexity
+
+Solutions:
+
+* LoRA
+* QLoRA
+* Distributed Training
+* Adapter Architectures
+
+---
+
+# Performance
+
+Optimize:
+
+* Training Speed
+* GPU Utilization
+* Model Quality
+* Inference Cost
+
+---
+
+# Security
+
+Protect:
+
+* Training Data
+* Model Weights
+* Proprietary Knowledge
+
+---
+
+# Reliability
+
+Use:
+
+* Benchmark Suites
+* Human Reviews
+* Regression Tests
+* Continuous Evaluation
+
+---
+
+# Monitoring
+
+Track:
+
+* Drift
+* Accuracy
+* Cost
+* Latency
+* User Feedback
+
+---
+
+# Cost Optimization
+
+Balance:
+
+```text
+Model Quality
+       vs
+Training Cost
+       vs
+Inference Cost
+```
+
+---
+
+# Final Mastery Checklist
+
+## Beginner
+
+* [ ] Understand training fundamentals
+* [ ] Understand SFT
+* [ ] Build datasets
+
+---
+
+## Intermediate
+
+* [ ] Fine-tune Llama or Gemma
+* [ ] Train LoRA adapters
+* [ ] Build evaluation systems
+
+---
+
+## Advanced
+
+* [ ] Implement instruction tuning
+* [ ] Implement preference tuning
+* [ ] Deploy production models
+
+---
+
+## Expert
+
+* [ ] Build enterprise fine-tuning platforms
+* [ ] Optimize training pipelines
+* [ ] Manage model lifecycle
+
+---
+
+## Architect
+
+* [ ] Design model customization strategy
+* [ ] Build continuous training infrastructure
+* [ ] Architect domain-specific AI ecosystems
+* [ ] Decide when to use Prompting vs RAG vs Fine-Tuning vs Agents
+
+---
+
+# Final Mental Model
+
+```text
+Knowledge Problem?
+ ↓
+Use RAG
+
+Behavior Problem?
+ ↓
+Use Prompting
+
+Skill Problem?
+ ↓
+Use Fine-Tuning
+
+Action Problem?
+ ↓
+Use Agents
+```
+
+The most important lesson:
+
+```text
+Fine-Tuning changes behavior.
+
+RAG changes knowledge.
+
+Agents change capabilities.
+```
+
+The best AI engineers know not only how to fine-tune models, but when fine-tuning is the wrong solution.
