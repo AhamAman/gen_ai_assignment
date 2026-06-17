@@ -193,12 +193,12 @@ def run_dashboard(client):
         
         current_persona = PERSONAS[selected_teacher]
         
-        # User details with session state keys to prevent resets on rerun
-        p_level = st.select_slider(
-            "Aapka current knowledge level kya hai? (Experience Level)",
-            options=["Beginner / absolute fresher", "Intermediate (Know some basics)", "Advanced (In-depth queries)"],
-            key="user_level"
-        )
+        # # User details with session state keys to prevent resets on rerun
+        # p_level = st.select_slider(
+        #     "Aapka current knowledge level kya hai? (Experience Level)",
+        #     options=["Beginner / absolute fresher", "Intermediate (Know some basics)", "Advanced (In-depth queries)"],
+        #     key="user_level"
+        # )
         
         p_interest = st.text_input(
             f"Aap kis topic ke baare mein seekhna chahte hain? ({current_persona['domain']})",
@@ -221,7 +221,7 @@ def run_dashboard(client):
                 st.warning("Please specify a topic you want to learn today!")
             else:
                 st.session_state.user_profile = {
-                    "level": p_level,
+                    # "level": p_level,
                     "interest": p_interest,
                     "preference": p_preference
                 }
@@ -232,7 +232,7 @@ def run_dashboard(client):
                 greeting_instruction = (
                     f"Introduce yourself as {teacher_name}, specializing in {current_persona['domain']}. "
                     f"The user has filled a profile:\n"
-                    f"- Experience: {p_level}\n"
+                    # f"- Experience: {p_level}\n"
                     f"- Interest Topic: {p_interest}\n"
                     f"- Learning Style: {p_preference}\n\n"
                     f"Write a warm, short initial greeting (under 100 words) in Hinglish. "
