@@ -8,6 +8,7 @@ import os
 import requests
 import json
 import re
+import subprocess
 
 load_dotenv()
 
@@ -24,8 +25,10 @@ def get_weather(city: str):
     return "Something went wrong"
 
 def run_command(command):
-    result = os.system(command=command)
-    return result
+    try:
+        return subprocess.getoutput(command)
+    except Exception as e:
+        return str(e)
 
 available_tools = {
     "get_weather": {
@@ -82,7 +85,7 @@ while True:
     while True: 
         response = client.models.generate_content(
             config=types.GenerateContentConfig(system_instruction=system_prompt),
-            model='gemini-2.0-flash-001',
+            model='gemini-2.5-flash',
             contents=messages,
         )
         cleaned_text = re.sub(r"^```json|```$", "", response.text.strip(), flags=re.MULTILINE).strip()

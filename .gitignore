@@ -13,3 +13,5 @@ __pycache__/
 .env
 .env.*
 
+# Local databases and vector stores
+qdrant_storage/

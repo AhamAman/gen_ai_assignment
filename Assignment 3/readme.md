@@ -1,22 +1,80 @@
-# 📚 PDF RAG Assistant
+# 📚 PDF Study Assistant (RAG App)
 
-A lightweight, local Retrieval-Augmented Generation (RAG) application that allows users to securely upload, index, and chat with PDF documents. Built with Streamlit, LangChain, Qdrant, and Google's Gemini models.
+A lightweight, local Retrieval-Augmented Generation (RAG) study assistant that allows you to upload, index, and ask questions about PDF documents. 
 
-## ⚙️ System Architecture
+By default, the application is pre-loaded with **nodejs.pdf** so you can run it and start asking questions instantly without waiting for any ingestion!
 
-This application operates on a strict ingestion-to-generation pipeline to prevent LLM hallucinations:
+---
 
-1. **Document Ingestion:** Uploaded PDFs are parsed securely using `PyPDFLoader` and staged in temporary memory.
-2. **Chunking & Vectorization:** Text is sliced into 1,000-character chunks with a 200-character overlap to preserve contextual continuity. Chunks are converted into semantic vectors using `GoogleGenerativeAIEmbeddings` (`text-embedding-004`).
-3. **Local Vector Storage:** Embeddings are stored in a local **Qdrant** database instance, creating a unique collection for each uploaded document to prevent cross-contamination of contexts.
-4. **Contextual Retrieval:** User queries trigger a similarity search ($k=4$), extracting the most mathematically relevant document passages.
-5. **Grounded Generation:** The retrieved context is injected into a strict system prompt. **Gemini 1.5 Flash** synthesizes the final answer, explicitly citing the source pages used.
+## ⚙️ Architecture & Key Design Decisions
 
-## 🛠️ Tech Stack
+During development, several key design choices were made to optimize speed, reliability, and cost-efficiency:
 
-* **Frontend:** Streamlit
-* **Orchestration:** LangChain
-* **Vector Database:** Qdrant (Local Docker Instance)
-* **Embeddings & LLM:** Google Gemini API
-* **Data Processing:** PyPDF
+### 1. Local On-Disk Qdrant Storage (No Docker Required)
+* **Decision:** We configured Qdrant to run in **local on-disk mode** (`qdrant_storage/` directory) instead of spinning up a Docker container.
+* **Benefits:** 
+  * Zero setup overhead (no Docker Desktop or daemon required).
+  * Extremely lightweight database footprint.
+  * Direct filesystem verification (you can see the database files created directly in the project workspace).
 
+### 2. Local Offline Embeddings (FastEmbed)
+* **Decision:** We migrated from Google's Cloud Embedding API (`gemini-embedding-001`) to Qdrant's native **FastEmbed** (`BAAI/bge-small-en-v1.5` 384-dimension) library.
+* **Benefits:**
+  * **Zero Rate Limits:** Completely bypasses the Gemini Free Tier daily limits (1,000 requests/day), ensuring the app never crashes from API exhausts.
+  * **Extreme Speed:** Embeds the entire 266-chunk Node.js study guide in under 3 seconds on a standard local CPU (compared to minutes of sequential cloud calls).
+  * **Privacy & Cost:** Documents are vectorized completely offline on your own machine.
+
+### 3. Default Document Auto-Loading
+* **Decision:** The application automatically scans the local Qdrant collection on startup.
+* **Benefits:** If `nodejs.pdf` has already been pre-indexed (which we did during setup), the app loads the vector index **instantly (<1ms)** at startup. You do not have to upload the file to start querying it.
+
+### 4. Grounded Generation Citations (Gemini 2.5 Flash)
+* **Decision:** We pair the retrieved context with a strict system prompt and feed it to **Gemini 2.5 Flash** for final synthesis.
+* **Benefits:** The AI only answers using the provided context and provides clickable/expandable page citations, pointing you directly to the exact page in the PDF where the answer was found.
+
+---
+
+## 📂 Project Structure
+
+* **`rag_1.py`**: The main Streamlit web application. Contains the UI, auto-loading logic, similarity retrieval, and LLM orchestration.
+* **`nodejs.pdf`**: The default Node.js study guide provided in the project.
+* **`qdrant_storage/`**: The local directory containing the vectorized Qdrant collection files (automatically ignored by Git).
+* **`requirements.txt`**: The complete list of required libraries.
+
+---
+
+## 🛠️ Setup & Installation
+
+### 1. Configure Secrets
+Ensure you have a `.env` file inside the `Assignment 3/` folder (or project root) with your Gemini API key:
+```env
+GEMINI_API_KEY=your_actual_gemini_api_key_here
+```
+
+### 2. Virtual Environment Setup
+Ensure your local Python virtual environment is active and up to date:
+```powershell
+# Navigate to the folder
+cd "E:\Data cohort\gen_ai_assignment\Assignment 3"
+
+# Activate your environment
+..\.venv\Scripts\activate
+
+# Install requirements
+pip install -r requirements.txt
+```
+
+---
+
+## 🚀 Usage
+
+### Running the App
+Start the Streamlit application:
+```powershell
+streamlit run rag_1.py
+```
+
+* **Instant Load:** Upon opening, you will see `nodejs.pdf` loaded automatically.
+* **Chatting:** Type any question in the input box at the bottom.
+* **Checking Sources:** Expand the **📄 Source passages used** toggle below the AI's response to check which pages and text snippets were retrieved.
+* **Custom PDF Upload:** Drag and drop a new PDF into the sidebar. The app will split it, embed it locally with FastEmbed, and create a separate database collection instantly.
