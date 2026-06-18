@@ -34,6 +34,28 @@ During development, several key design choices were made to optimize speed, reli
 
 ---
 
+## 🚨 Troubleshooting & Development Errors Solved
+
+Here are the specific errors encountered during development and how they were resolved:
+
+### 1. Gemini Embedding Quota Exhaustion (`429 RESOURCE_EXHAUSTED`)
+* **The Error:** Initially, attempting to embed the 266 text chunks using Gemini's API (`models/gemini-embedding-001`) triggered concurrency errors. Even when throttled sequentially (with `time.sleep(0.7)`), we eventually hit the strict **1,000 daily embedding requests limit** on the Gemini Free Tier API key, resulting in:
+  `Quota exceeded for metric: generativelanguage.googleapis.com/embed_content_free_tier_requests`
+* **The Solution:** We replaced Google Generative AI Embeddings with the local `FastEmbedEmbeddings` model. This shifted the document vectorization entirely offline onto your local CPU, bypassing the Gemini API limits completely.
+
+### 2. Vector Shape Mismatch Error
+* **The Error:** After switching embedding models, running ingestion triggered the following error:
+  `ValueError: could not broadcast input array from shape (384,) into shape (3072,)`
+  This happened because the database collection on disk was originally built using Gemini's 3,072-dimension embeddings, which conflicted with FastEmbed's 384-dimension output.
+* **The Solution:** We cleanly wiped the `qdrant_storage/` folder on disk and recreated the database collection with `size=384` to match FastEmbed's parameters.
+
+### 3. Qdrant File Locking Conflict
+* **The Error:** Force-terminating background tasks that were writing to the local Qdrant database left lock files behind, causing the client to hang or throw warnings during subsequent executions:
+  `ModuleNotFoundError: import of msvcrt halted; None in sys.modules` (associated with the `portalocker` library used by Qdrant to manage file access).
+* **The Solution:** We terminated all overlapping background processes and ran clean, unbuffered runs (`python -u`) after wiping the locks/storage folder, ensuring a single clean process created the database.
+
+---
+
 ## 📂 Project Structure
 
 * **`rag_1.py`**: The main Streamlit web application. Contains the UI, auto-loading logic, similarity retrieval, and LLM orchestration.
