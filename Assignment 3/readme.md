@@ -96,7 +96,3 @@ Start the Streamlit application:
 streamlit run rag_1.py
 ```
 
-* **Instant Load:** Upon opening, you will see `nodejs.pdf` loaded automatically.
-* **Chatting:** Type any question in the input box at the bottom.
-* **Checking Sources:** Expand the **📄 Source passages used** toggle below the AI's response to check which pages and text snippets were retrieved.
-* **Custom PDF Upload:** Drag and drop a new PDF into the sidebar. The app will split it, embed it locally with FastEmbed, and create a separate database collection instantly.
